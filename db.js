@@ -18,4 +18,11 @@ db.exec(`
   )
 `);
 
+// v2 migration: add best_score for pronunciation tracking
+try {
+  db.exec('ALTER TABLE sentences ADD COLUMN best_score INTEGER DEFAULT 0');
+} catch (_) {
+  // column already exists — ok
+}
+
 module.exports = db;

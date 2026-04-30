@@ -31,20 +31,23 @@ module.exports = function (db) {
   });
 
   router.patch('/:id', (req, res) => {
-    const { english } = req.body;
-    if (!english) {
-      return res.status(400).json({ error: 'english is required' });
+    const { english, best_score } = req.body;
+    if (!english && best_score === undefined) {
+      return res.status(400).json({ error: 'english or best_score is required' });
     }
 
-    const result = db
-      .prepare('UPDATE sentences SET english = ? WHERE id = ?')
-      .run(english.trim(), req.params.id);
+    const id = req.params.id;
+    const existing = db.prepare('SELECT * FROM sentences WHERE id = ?').get(id);
+    if (!existing) return res.status(404).json({ error: 'Not found' });
 
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Not found' });
+    if (english) {
+      db.prepare('UPDATE sentences SET english = ? WHERE id = ?').run(english.trim(), id);
+    }
+    if (best_score !== undefined && best_score > (existing.best_score || 0)) {
+      db.prepare('UPDATE sentences SET best_score = ? WHERE id = ?').run(best_score, id);
     }
 
-    const row = db.prepare('SELECT * FROM sentences WHERE id = ?').get(req.params.id);
+    const row = db.prepare('SELECT * FROM sentences WHERE id = ?').get(id);
     res.json(row);
   });
 

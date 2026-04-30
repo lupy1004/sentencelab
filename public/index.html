@@ -370,9 +370,100 @@
     #dont-know-btn { background: rgba(239,68,68,0.12); color: var(--danger); }
     #dont-know-btn:active { background: rgba(239,68,68,0.24); }
     .quiz-done { text-align: center; padding: 40px 20px; }
-    .quiz-done .big-icon { font-size: 56px; margin-bottom: 14px; }
     .quiz-done h3 { margin: 0 0 8px; font-size: 22px; }
     .quiz-done p { margin: 0 0 22px; color: var(--text-muted); font-size: 14px; }
+
+    /* ── Tab 4: 발음 연습 ── */
+    .pron-hint { font-size: 13px; color: var(--text-muted); margin: 0 0 12px; }
+    .pron-list { display: flex; flex-direction: column; gap: 8px; }
+    .pron-card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pron-card:active { transform: scale(0.98); }
+    .pron-card.selected { border-color: var(--accent); background: rgba(37,99,235,0.07); }
+    .pron-card .pron-korean { font-size: 12px; color: var(--text-muted); margin-bottom: 3px; word-break: break-word; }
+    .pron-card .pron-english { font-size: 15px; color: var(--text); font-weight: 500; word-break: break-word; }
+    .best-badge {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(37,99,235,0.1);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .practice-panel { display: none; }
+    .practice-panel.visible { display: block; }
+    .practice-target {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .practice-target .target-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    .record-section { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .record-btn {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .record-btn:active { transform: scale(0.92); }
+    .record-btn.recording {
+      background: var(--danger);
+      box-shadow: 0 4px 20px rgba(239,68,68,0.4);
+      animation: pulse-mic 1.2s ease-out infinite;
+    }
+    @keyframes pulse-mic {
+      0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.5); }
+      70%  { box-shadow: 0 0 0 18px rgba(239,68,68,0); }
+      100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+    }
+    .record-btn svg { width: 28px; height: 28px; }
+    .record-status { font-size: 13px; color: var(--text-muted); }
+    .score-section {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .score-number { font-size: 52px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .score-label { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
+    .word-results { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 4px; }
+    .word-chip { padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+    .word-chip.match { background: rgba(34,197,94,0.15); color: #15803d; }
+    .word-chip.miss  { background: rgba(239,68,68,0.12); color: var(--danger); text-decoration: line-through; }
+    .pron-best-record { font-size: 12px; color: var(--text-muted); margin-top: 10px; font-weight: 600; }
+    .pron-new-record { color: var(--success); }
   </style>
 </head>
 <body>
@@ -427,6 +518,43 @@
       <div id="quiz-area"><div class="flashcard-placeholder"></div></div>
     </section>
 
+    <!-- Tab 4: 발음 연습 -->
+    <section id="tab-pron" class="tab-pane">
+      <!-- 문장 목록 -->
+      <div id="pron-list-view">
+        <p class="pron-hint">연습할 문장을 선택하세요</p>
+        <div id="pron-sentence-list" class="pron-list"></div>
+      </div>
+
+      <!-- 연습 패널 -->
+      <div id="pron-practice-view" class="practice-panel">
+        <button class="btn btn-ghost" onclick="pronBack()" style="margin-bottom:12px;">← 목록으로</button>
+
+        <div class="practice-target">
+          <div class="target-text" id="pron-target-text"></div>
+          <button class="btn btn-ghost" onclick="pronListen()">▶ 발음 듣기</button>
+        </div>
+
+        <div class="record-section">
+          <button class="record-btn" id="record-btn" onclick="toggleRecording()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" y1="19" x2="12" y2="22"/>
+            </svg>
+          </button>
+          <div class="record-status" id="record-status">탭하여 녹음 시작</div>
+        </div>
+
+        <div id="pron-result" class="score-section hidden">
+          <div class="score-number" id="pron-score"></div>
+          <div class="score-label">점</div>
+          <div class="word-results" id="pron-words"></div>
+          <div class="pron-best-record" id="pron-best-record"></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <!-- ── Bottom Navigation ── -->
@@ -442,6 +570,10 @@
     <button data-tab="quiz" onclick="showTab('quiz')">
       <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2Z"/></svg></span>
       <span>퀴즈</span>
+    </button>
+    <button data-tab="pron" onclick="showTab('pron')">
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></span>
+      <span>발음</span>
     </button>
   </nav>
 
@@ -460,6 +592,7 @@ const s = {
   hideKorean: false,
   hideEnglish: false,
   quiz: { mode: 'kr-en', deck: [], idx: 0, flipped: false },
+  pron: { sentences: [], selected: null, isRecording: false, recognition: null },
 };
 
 /* ── Tab Switching ── */
@@ -472,6 +605,7 @@ function showTab(tab) {
   );
   if (tab === 'sentences') loadSentences();
   if (tab === 'quiz') initQuiz();
+  if (tab === 'pron') initPron();
 }
 
 /* ── Toast ── */
@@ -814,6 +948,168 @@ function esc(str) {
 document.getElementById('korean-input').addEventListener('keydown', e => {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doTranslate(); }
 });
+
+/* ── Tab 4: 발음 연습 ── */
+async function initPron() {
+  // Reset to list view
+  document.getElementById('pron-list-view').style.display = '';
+  document.getElementById('pron-practice-view').classList.remove('visible');
+  if (s.pron.isRecording) stopRecording();
+  s.pron.selected = null;
+
+  try {
+    const res = await fetch('/api/sentences?page=1&limit=100');
+    const data = await res.json();
+    s.pron.sentences = data.data;
+    renderPronList();
+  } catch {
+    showToast('문장 로드 실패');
+  }
+}
+
+function renderPronList() {
+  const list = document.getElementById('pron-sentence-list');
+  if (s.pron.sentences.length === 0) {
+    list.innerHTML = `<div class="empty-state"><p>저장된 문장이 없습니다.<br>번역 탭에서 먼저 문장을 저장해주세요.</p></div>`;
+    return;
+  }
+  list.innerHTML = s.pron.sentences.map(row => `
+    <div class="pron-card${s.pron.selected?.id === row.id ? ' selected' : ''}" onclick="selectPronSentence(${row.id})">
+      <div class="pron-korean">${esc(row.korean)}</div>
+      <div class="pron-english">${esc(row.english)}</div>
+      ${(row.best_score > 0) ? `<span class="best-badge">최고 ${row.best_score}점</span>` : ''}
+    </div>
+  `).join('');
+}
+
+function selectPronSentence(id) {
+  s.pron.selected = s.pron.sentences.find(r => r.id === id) || null;
+  if (!s.pron.selected) return;
+  if (s.pron.isRecording) stopRecording();
+
+  document.getElementById('pron-list-view').style.display = 'none';
+  document.getElementById('pron-practice-view').classList.add('visible');
+  document.getElementById('pron-target-text').textContent = s.pron.selected.english;
+  document.getElementById('pron-result').classList.add('hidden');
+  document.getElementById('record-status').textContent = '탭하여 녹음 시작';
+  document.getElementById('record-btn').classList.remove('recording');
+}
+
+function pronBack() {
+  if (s.pron.isRecording) stopRecording();
+  document.getElementById('pron-list-view').style.display = '';
+  document.getElementById('pron-practice-view').classList.remove('visible');
+  renderPronList();
+}
+
+function pronListen() {
+  if (s.pron.selected) speakEnglish(s.pron.selected.english);
+}
+
+function toggleRecording() {
+  s.pron.isRecording ? stopRecording() : startRecording();
+}
+
+function startRecording() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    showToast('Chrome 또는 Edge 브라우저에서만 지원됩니다');
+    return;
+  }
+
+  const recog = new SR();
+  recog.lang = 'en-US';
+  recog.interimResults = false;
+  recog.maxAlternatives = 1;
+  let hasResult = false;
+
+  recog.onstart = () => {
+    s.pron.isRecording = true;
+    document.getElementById('record-btn').classList.add('recording');
+    document.getElementById('record-status').textContent = '말하세요...';
+    document.getElementById('pron-result').classList.add('hidden');
+  };
+
+  recog.onresult = (event) => {
+    hasResult = true;
+    evaluatePronunciation(event.results[0][0].transcript);
+  };
+
+  recog.onerror = (event) => {
+    const msgs = { 'no-speech': '음성이 감지되지 않았습니다', 'not-allowed': '마이크 권한을 허용해주세요' };
+    showToast(msgs[event.error] || '오류: ' + event.error);
+  };
+
+  recog.onend = () => {
+    s.pron.isRecording = false;
+    s.pron.recognition = null;
+    document.getElementById('record-btn').classList.remove('recording');
+    if (!hasResult) document.getElementById('record-status').textContent = '탭하여 녹음 시작';
+  };
+
+  s.pron.recognition = recog;
+  recog.start();
+}
+
+function stopRecording() {
+  if (s.pron.recognition) { s.pron.recognition.stop(); s.pron.recognition = null; }
+  s.pron.isRecording = false;
+  document.getElementById('record-btn').classList.remove('recording');
+}
+
+function evaluatePronunciation(transcript) {
+  const target = s.pron.selected?.english || '';
+  const norm = str => str.toLowerCase().replace(/[^a-z\s']/g, '').trim();
+  const tWords = norm(target).split(/\s+/).filter(Boolean);
+  const sWords = norm(transcript).split(/\s+/).filter(Boolean);
+
+  // Word-level LCS for best-effort alignment
+  const m = tWords.length, n = sWords.length;
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
+  for (let i = 1; i <= m; i++)
+    for (let j = 1; j <= n; j++)
+      dp[i][j] = tWords[i-1] === sWords[j-1] ? dp[i-1][j-1] + 1 : Math.max(dp[i-1][j], dp[i][j-1]);
+
+  const matched = new Set();
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (tWords[i-1] === sWords[j-1]) { matched.add(i-1); i--; j--; }
+    else if (dp[i-1][j] >= dp[i][j-1]) i--;
+    else j--;
+  }
+
+  const score = m > 0 ? Math.round((matched.size / m) * 100) : 0;
+
+  document.getElementById('pron-score').textContent = score;
+  document.getElementById('pron-words').innerHTML = tWords
+    .map((w, idx) => `<span class="word-chip ${matched.has(idx) ? 'match' : 'miss'}">${esc(w)}</span>`)
+    .join('');
+
+  const prevBest = s.pron.selected?.best_score || 0;
+  const bestEl = document.getElementById('pron-best-record');
+  if (score > prevBest) {
+    bestEl.innerHTML = `<span class="pron-new-record">★ 신기록!</span> (이전: ${prevBest > 0 ? prevBest + '점' : '없음'})`;
+    savePronScore(s.pron.selected.id, score);
+  } else {
+    bestEl.textContent = prevBest > 0 ? `최고 기록: ${prevBest}점` : '';
+  }
+
+  document.getElementById('pron-result').classList.remove('hidden');
+  document.getElementById('record-status').textContent = '탭하여 다시 녹음';
+}
+
+async function savePronScore(id, score) {
+  try {
+    await fetch(`/api/sentences/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ best_score: score }),
+    });
+    const row = s.pron.sentences.find(r => r.id === id);
+    if (row) row.best_score = score;
+    if (s.pron.selected?.id === id) s.pron.selected.best_score = score;
+  } catch { /* silent — score already shown */ }
+}
 </script>
 </body>
 </html>
