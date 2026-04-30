@@ -105,7 +105,8 @@
       min-height: 60px;
       -webkit-tap-highlight-color: transparent;
     }
-    .bottom-nav button .icon { font-size: 22px; line-height: 1; }
+    .bottom-nav button .icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .bottom-nav button .icon svg { width: 22px; height: 22px; }
     .bottom-nav button.active { color: var(--accent); }
 
     /* ── Shared Components ── */
@@ -379,7 +380,7 @@
 
   <!-- ── Header ── -->
   <header>
-    <h1>✏️ Eng-cha</h1>
+    <h1>Eng-cha</h1>
     <p>내가 말하고 싶은 문장을 영어로</p>
   </header>
 
@@ -431,15 +432,15 @@
   <!-- ── Bottom Navigation ── -->
   <nav class="bottom-nav">
     <button class="active" data-tab="translate" onclick="showTab('translate')">
-      <span class="icon">📝</span>
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1 21 5l-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23 3 19l4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
       <span>번역</span>
     </button>
     <button data-tab="sentences" onclick="showTab('sentences')">
-      <span class="icon">📄</span>
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg></span>
       <span>내 문장</span>
     </button>
     <button data-tab="quiz" onclick="showTab('quiz')">
-      <span class="icon">🎯</span>
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2Z"/></svg></span>
       <span>퀴즈</span>
     </button>
   </nav>
