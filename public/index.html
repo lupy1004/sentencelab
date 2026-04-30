@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Eng-cha</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css">
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --bg: #eef1f6;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --glass: rgba(255,255,255,0.65);
+      --glass-border: rgba(255,255,255,0.8);
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── App Shell (phone-frame on desktop) ── */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      max-width: 430px;
+      margin: 0 auto;
+      background: var(--bg);
+      position: relative;
+      box-shadow: 0 0 60px rgba(0,0,0,0.12);
+    }
+
+    /* ── Header ── */
+    header {
+      flex-shrink: 0;
+      padding: 20px 20px 14px;
+      background: rgba(255,255,255,0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.6);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    header p {
+      margin: 3px 0 0;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Content Area ── */
+    #content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px;
+    }
+
+    /* ── Tab Panes ── */
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── Bottom Navigation ── */
+    .bottom-nav {
+      flex-shrink: 0;
+      display: flex;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(0,0,0,0.07);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .bottom-nav button {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 0 12px;
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.2s;
+      min-height: 60px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bottom-nav button .icon { font-size: 22px; line-height: 1; }
+    .bottom-nav button.active { color: var(--accent); }
+
+    /* ── Shared Components ── */
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: var(--radius);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 16px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      width: 100%;
+      min-height: 50px;
+    }
+    .btn-primary:active { background: var(--accent-dark); transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-ghost {
+      background: rgba(37,99,235,0.1);
+      color: var(--accent);
+      font-size: 13px;
+      padding: 8px 14px;
+    }
+    .btn-ghost:active { background: rgba(37,99,235,0.2); }
+    .btn-ghost.active { background: var(--accent); color: #fff; }
+    .btn-danger {
+      background: rgba(239,68,68,0.1);
+      color: var(--danger);
+      font-size: 13px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-danger:active { background: rgba(239,68,68,0.2); }
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid rgba(37,99,235,0.2);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.8);
+      font-size: 16px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+      color: var(--text);
+    }
+    textarea:focus { border-color: var(--accent); }
+    .mt { margin-top: 12px; }
+    .hidden { display: none !important; }
+    .error-msg { color: var(--danger); font-size: 13px; margin-top: 8px; }
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 44px; margin-bottom: 12px; }
+    .empty-state p { margin: 0; font-size: 14px; line-height: 1.6; }
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30,41,59,0.9);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 20px;
+      font-size: 14px;
+      z-index: 200;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+    }
+    .toast.show { opacity: 1; }
+
+    /* ── Tab 1: 번역 ── */
+    #translate-result { margin-top: 16px; }
+    #english-text {
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--text);
+      margin: 0 0 14px;
+      word-break: break-word;
+    }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* ── Tab 2: 내 문장 ── */
+    .toggle-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+    .sentence-card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .sentence-card .korean {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      transition: filter 0.3s;
+      word-break: break-word;
+    }
+    .sentence-card .english {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: filter 0.3s;
+      word-break: break-word;
+    }
+    .sentence-card .card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .sentence-card .edit-input {
+      width: 100%;
+      padding: 7px 11px;
+      border: 1.5px solid var(--accent);
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      background: rgba(255,255,255,0.9);
+    }
+    #sentences-list.hide-korean .korean { filter: blur(5px); user-select: none; }
+    #sentences-list.hide-english .english { filter: blur(5px); user-select: none; }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      margin-top: 16px;
+      padding-bottom: 8px;
+    }
+    .pagination span { font-size: 14px; color: var(--text-muted); min-width: 50px; text-align: center; }
+
+    /* ── Tab 3: 퀴즈 ── */
+    .mode-selector { display: flex; gap: 8px; margin-bottom: 16px; }
+    .mode-selector button {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid rgba(37,99,235,0.2);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.6);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .mode-selector button.active {
+      border-color: var(--accent);
+      background: rgba(37,99,235,0.1);
+      color: var(--accent);
+    }
+    .quiz-progress {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0 0 14px;
+    }
+    .flashcard-container { perspective: 1200px; margin-bottom: 20px; }
+    .flashcard {
+      width: 100%;
+      min-height: 210px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+      cursor: pointer;
+    }
+    .flashcard.flipped { transform: rotateY(180deg); }
+    .flashcard-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border-radius: var(--radius);
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .flashcard-back { transform: rotateY(180deg); }
+    .flashcard-face .prompt-lang {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .flashcard-face .sentence-text {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .flashcard-face .tap-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 18px;
+    }
+    .flashcard-face .listen-btn-quiz { margin-top: 16px; }
+    /* placeholder keeps layout height before JS renders */
+    .flashcard-placeholder { min-height: 210px; }
+    .quiz-actions {
+      display: flex;
+      gap: 12px;
+    }
+    .quiz-actions button {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      font-family: inherit;
+    }
+    .quiz-actions button:active { transform: scale(0.96); }
+    #know-btn { background: rgba(34,197,94,0.15); color: var(--success); }
+    #know-btn:active { background: rgba(34,197,94,0.28); }
+    #dont-know-btn { background: rgba(239,68,68,0.12); color: var(--danger); }
+    #dont-know-btn:active { background: rgba(239,68,68,0.24); }
+    .quiz-done { text-align: center; padding: 40px 20px; }
+    .quiz-done .big-icon { font-size: 56px; margin-bottom: 14px; }
+    .quiz-done h3 { margin: 0 0 8px; font-size: 22px; }
+    .quiz-done p { margin: 0 0 22px; color: var(--text-muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── Header ── -->
+  <header>
+    <h1>✏️ Eng-cha</h1>
+    <p>내가 말하고 싶은 문장을 영어로</p>
+  </header>
+
+  <!-- ── Main Content ── -->
+  <main id="content">
+
+    <!-- Tab 1: 번역 -->
+    <section id="tab-translate" class="tab-pane active">
+      <textarea id="korean-input" rows="4" placeholder="번역할 한국어 문장을 입력하세요…&#10;(Enter로 번역)"></textarea>
+      <button class="btn btn-primary mt" id="translate-btn" onclick="doTranslate()">번역하기 →</button>
+      <p id="translate-error" class="error-msg hidden"></p>
+
+      <div id="translate-result" class="card hidden">
+        <p id="english-text"></p>
+        <div class="action-row">
+          <button class="btn btn-ghost" id="listen-btn" onclick="doListen()">▶ 듣기</button>
+          <button class="btn btn-ghost" id="repeat-btn" onclick="toggleRepeat()">🔁 반복</button>
+          <button class="btn btn-ghost" id="save-btn" onclick="doSave()">💾 저장</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: 내 문장 -->
+    <section id="tab-sentences" class="tab-pane">
+      <div class="toggle-row">
+        <button class="btn btn-ghost" id="toggle-korean" onclick="toggleHide('korean')">한국어 가리기</button>
+        <button class="btn btn-ghost" id="toggle-english" onclick="toggleHide('english')">영어 가리기</button>
+      </div>
+      <div id="sentences-list"></div>
+      <div class="pagination hidden" id="pagination">
+        <button class="btn btn-ghost" id="prev-btn" onclick="changePage(-1)">← 이전</button>
+        <span id="page-info"></span>
+        <button class="btn btn-ghost" id="next-btn" onclick="changePage(1)">다음 →</button>
+      </div>
+    </section>
+
+    <!-- Tab 3: 퀴즈 -->
+    <section id="tab-quiz" class="tab-pane">
+      <div class="mode-selector">
+        <button id="mode-kr-en" class="active" onclick="setQuizMode('kr-en')">🇰🇷 → 🇺🇸 모드</button>
+        <button id="mode-en-kr" onclick="setQuizMode('en-kr')">🇺🇸 → 🇰🇷 모드</button>
+      </div>
+      <p class="quiz-progress" id="quiz-progress"></p>
+      <div id="quiz-area"><div class="flashcard-placeholder"></div></div>
+    </section>
+
+  </main>
+
+  <!-- ── Bottom Navigation ── -->
+  <nav class="bottom-nav">
+    <button class="active" data-tab="translate" onclick="showTab('translate')">
+      <span class="icon">📝</span>
+      <span>번역</span>
+    </button>
+    <button data-tab="sentences" onclick="showTab('sentences')">
+      <span class="icon">📄</span>
+      <span>내 문장</span>
+    </button>
+    <button data-tab="quiz" onclick="showTab('quiz')">
+      <span class="icon">🎯</span>
+      <span>퀴즈</span>
+    </button>
+  </nav>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── State ── */
+const s = {
+  english: '',
+  looping: false,
+  sentences: [],
+  page: 1,
+  total: 0,
+  limit: 20,
+  hideKorean: false,
+  hideEnglish: false,
+  quiz: { mode: 'kr-en', deck: [], idx: 0, flipped: false },
+};
+
+/* ── Tab Switching ── */
+function showTab(tab) {
+  document.querySelectorAll('.tab-pane').forEach(p =>
+    p.classList.toggle('active', p.id === `tab-${tab}`)
+  );
+  document.querySelectorAll('.bottom-nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === tab)
+  );
+  if (tab === 'sentences') loadSentences();
+  if (tab === 'quiz') initQuiz();
+}
+
+/* ── Toast ── */
+let _toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ── Tab 1: 번역 ── */
+async function doTranslate() {
+  const input = document.getElementById('korean-input').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('translate-btn');
+  const errEl = document.getElementById('translate-error');
+  const resultEl = document.getElementById('translate-result');
+
+  btn.disabled = true;
+  btn.textContent = '번역 중…';
+  errEl.classList.add('hidden');
+  resultEl.classList.add('hidden');
+
+  try {
+    const res = await fetch('/api/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ korean: input }),
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    s.english = data.english;
+    document.getElementById('english-text').textContent = data.english;
+    resultEl.classList.remove('hidden');
+    s.looping = false;
+    document.getElementById('repeat-btn').classList.remove('active');
+    window.speechSynthesis.cancel();
+  } catch {
+    errEl.textContent = '번역에 실패했습니다. 다시 시도해주세요.';
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '번역하기 →';
+  }
+}
+
+function doListen() {
+  if (!s.english) return;
+  speakEnglish(s.english);
+}
+
+function toggleRepeat() {
+  s.looping = !s.looping;
+  document.getElementById('repeat-btn').classList.toggle('active', s.looping);
+  if (s.looping && s.english) speakEnglish(s.english);
+  else window.speechSynthesis.cancel();
+}
+
+async function doSave() {
+  const korean = document.getElementById('korean-input').value.trim();
+  if (!korean || !s.english) return;
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  try {
+    const res = await fetch('/api/sentences', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ korean, english: s.english }),
+    });
+    if (!res.ok) throw new Error();
+    document.getElementById('korean-input').value = '';
+    document.getElementById('translate-result').classList.add('hidden');
+    s.english = '';
+    s.looping = false;
+    document.getElementById('repeat-btn').classList.remove('active');
+    window.speechSynthesis.cancel();
+    showToast('저장했습니다 ✓');
+  } catch {
+    showToast('저장 실패');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ── TTS (Web Speech API) ── */
+function speakEnglish(text) {
+  if (!window.speechSynthesis) { showToast('음성 재생 실패'); return; }
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(text);
+  utt.lang = 'en-US';
+  utt.rate = 0.9;
+  if (s.looping) {
+    utt.onend = () => { if (s.looping) speakEnglish(text); };
+  }
+  window.speechSynthesis.speak(utt);
+}
+
+/* ── Tab 2: 내 문장 ── */
+async function loadSentences() {
+  try {
+    const res = await fetch(`/api/sentences?page=${s.page}&limit=${s.limit}`);
+    const data = await res.json();
+    s.sentences = data.data;
+    s.total = data.total;
+    renderSentences();
+  } catch {
+    showToast('문장 로드 실패');
+  }
+}
+
+function renderSentences() {
+  const list = document.getElementById('sentences-list');
+  const pag = document.getElementById('pagination');
+
+  if (s.sentences.length === 0) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="icon">📭</div>
+      <p>저장된 문장이 없습니다.<br>번역 탭에서 문장을 추가해보세요.</p>
+    </div>`;
+    pag.classList.add('hidden');
+    return;
+  }
+
+  list.innerHTML = s.sentences.map(row => `
+    <div class="sentence-card" data-id="${row.id}">
+      <div class="korean">${esc(row.korean)}</div>
+      <div class="english" ondblclick="startEdit(${row.id}, this)">${esc(row.english)}</div>
+      <div class="card-actions">
+        <button class="btn btn-ghost" onclick="listenSentence(${row.id})">▶ 듣기</button>
+        <button class="btn btn-ghost" onclick="startEditById(${row.id})">✏️ 수정</button>
+        <button class="btn-danger" onclick="deleteSentence(${row.id})">🗑️ 삭제</button>
+      </div>
+    </div>
+  `).join('');
+
+  applyHideClasses();
+
+  const totalPages = Math.ceil(s.total / s.limit);
+  if (totalPages > 1) {
+    pag.classList.remove('hidden');
+    document.getElementById('page-info').textContent = `${s.page} / ${totalPages}`;
+    document.getElementById('prev-btn').disabled = s.page <= 1;
+    document.getElementById('next-btn').disabled = s.page >= totalPages;
+  } else {
+    pag.classList.add('hidden');
+  }
+}
+
+function applyHideClasses() {
+  const list = document.getElementById('sentences-list');
+  list.classList.toggle('hide-korean', s.hideKorean);
+  list.classList.toggle('hide-english', s.hideEnglish);
+}
+
+function toggleHide(lang) {
+  if (lang === 'korean') {
+    s.hideKorean = !s.hideKorean;
+    document.getElementById('toggle-korean').classList.toggle('active', s.hideKorean);
+  } else {
+    s.hideEnglish = !s.hideEnglish;
+    document.getElementById('toggle-english').classList.toggle('active', s.hideEnglish);
+  }
+  applyHideClasses();
+}
+
+function changePage(delta) {
+  const totalPages = Math.ceil(s.total / s.limit);
+  s.page = Math.max(1, Math.min(totalPages, s.page + delta));
+  loadSentences();
+}
+
+function listenSentence(id) {
+  const row = s.sentences.find(r => r.id === id);
+  if (!row) return;
+  speakEnglish(row.english);
+}
+
+function startEditById(id) {
+  const card = document.querySelector(`.sentence-card[data-id="${id}"]`);
+  if (card) startEdit(id, card.querySelector('.english'));
+}
+
+function startEdit(id, el) {
+  if (el.querySelector('input')) return;
+  const original = el.textContent;
+  const input = document.createElement('input');
+  input.className = 'edit-input';
+  input.value = original;
+  el.innerHTML = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+
+  let committed = false;
+  const commit = async () => {
+    if (committed) return;
+    committed = true;
+    const val = input.value.trim();
+    if (!val || val === original) { el.textContent = original; return; }
+    try {
+      const res = await fetch(`/api/sentences/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ english: val }),
+      });
+      if (!res.ok) throw new Error();
+      el.textContent = val;
+      const row = s.sentences.find(r => r.id === id);
+      if (row) row.english = val;
+      showToast('수정했습니다 ✓');
+    } catch {
+      el.textContent = original;
+      showToast('수정 실패');
+    }
+  };
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
+    if (e.key === 'Escape') { committed = true; el.textContent = original; }
+  });
+  input.addEventListener('blur', commit);
+}
+
+async function deleteSentence(id) {
+  if (!confirm('이 문장을 삭제할까요?')) return;
+  try {
+    const res = await fetch(`/api/sentences/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    showToast('삭제했습니다');
+    if (s.sentences.length === 1 && s.page > 1) s.page--;
+    await loadSentences();
+  } catch {
+    showToast('삭제 실패');
+  }
+}
+
+/* ── Tab 3: 퀴즈 ── */
+function setQuizMode(mode) {
+  s.quiz.mode = mode;
+  document.getElementById('mode-kr-en').classList.toggle('active', mode === 'kr-en');
+  document.getElementById('mode-en-kr').classList.toggle('active', mode === 'en-kr');
+  initQuiz();
+}
+
+async function initQuiz() {
+  try {
+    const res = await fetch('/api/sentences?page=1&limit=100');
+    const data = await res.json();
+    s.quiz.deck = [...data.data].sort(() => Math.random() - 0.5);
+    s.quiz.idx = 0;
+    s.quiz.flipped = false;
+    renderQuizCard();
+  } catch {
+    showToast('퀴즈 로드 실패');
+  }
+}
+
+function renderQuizCard() {
+  const area = document.getElementById('quiz-area');
+  const prog = document.getElementById('quiz-progress');
+  const { deck, idx, mode, flipped } = s.quiz;
+
+  if (deck.length === 0) {
+    prog.textContent = '';
+    area.innerHTML = `<div class="empty-state">
+      <div class="icon">📭</div>
+      <p>저장된 문장이 없습니다.<br>번역 탭에서 문장을 추가해보세요.</p>
+    </div>`;
+    return;
+  }
+
+  if (idx >= deck.length) {
+    prog.textContent = '';
+    area.innerHTML = `<div class="quiz-done">
+      <div class="big-icon">🎉</div>
+      <h3>퀴즈 완료!</h3>
+      <p>${deck.length}개 문장을 모두 풀었어요.</p>
+      <button class="btn btn-primary" onclick="initQuiz()">다시 하기</button>
+    </div>`;
+    return;
+  }
+
+  const card = deck[idx];
+  const frontText = mode === 'kr-en' ? card.korean : card.english;
+  const backText  = mode === 'kr-en' ? card.english : card.korean;
+  const frontLang = mode === 'kr-en' ? '🇰🇷 Korean' : '🇺🇸 English';
+  const backLang  = mode === 'kr-en' ? '🇺🇸 English' : '🇰🇷 Korean';
+
+  prog.textContent = `${idx + 1} / ${deck.length}`;
+
+  area.innerHTML = `
+    <div class="flashcard-container">
+      <div class="flashcard${flipped ? ' flipped' : ''}" id="flashcard" onclick="flipCard()">
+        <div class="flashcard-face flashcard-front">
+          <div class="prompt-lang">${frontLang}</div>
+          <div class="sentence-text">${esc(frontText)}</div>
+          <div class="tap-hint">탭하여 정답 확인</div>
+        </div>
+        <div class="flashcard-face flashcard-back">
+          <div class="prompt-lang">${backLang}</div>
+          <div class="sentence-text">${esc(backText)}</div>
+          ${mode === 'kr-en' ? `<button class="btn btn-ghost listen-btn-quiz" onclick="event.stopPropagation();quizListen()">▶ 듣기</button>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="quiz-actions${flipped ? '' : ' hidden'}" id="quiz-actions">
+      <button id="dont-know-btn" onclick="advance()">✗ 몰랐어</button>
+      <button id="know-btn" onclick="advance()">✓ 알았어</button>
+    </div>`;
+}
+
+function flipCard() {
+  s.quiz.flipped = !s.quiz.flipped;
+  const fc = document.getElementById('flashcard');
+  const actions = document.getElementById('quiz-actions');
+  if (fc) fc.classList.toggle('flipped', s.quiz.flipped);
+  if (actions) actions.classList.toggle('hidden', !s.quiz.flipped);
+}
+
+function advance() {
+  s.quiz.idx++;
+  s.quiz.flipped = false;
+  renderQuizCard();
+}
+
+function quizListen() {
+  const card = s.quiz.deck[s.quiz.idx];
+  if (!card) return;
+  speakEnglish(card.english);
+}
+
+/* ── Utils ── */
+function esc(str) {
+  return str
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+document.getElementById('korean-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); doTranslate(); }
+});
+</script>
+</body>
+</html>
