@@ -21,8 +21,14 @@ db.exec(`
 // v2 migration: add best_score for pronunciation tracking
 try {
   db.exec('ALTER TABLE sentences ADD COLUMN best_score INTEGER DEFAULT 0');
-} catch (_) {
-  // column already exists — ok
-}
+} catch (_) {}
+
+// v3 migration: add quiz tracking columns
+try {
+  db.exec('ALTER TABLE sentences ADD COLUMN quiz_right INTEGER DEFAULT 0');
+} catch (_) {}
+try {
+  db.exec('ALTER TABLE sentences ADD COLUMN quiz_wrong INTEGER DEFAULT 0');
+} catch (_) {}
 
 module.exports = db;

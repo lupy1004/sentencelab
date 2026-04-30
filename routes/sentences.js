@@ -31,9 +31,9 @@ module.exports = function (db) {
   });
 
   router.patch('/:id', (req, res) => {
-    const { english, best_score } = req.body;
-    if (!english && best_score === undefined) {
-      return res.status(400).json({ error: 'english or best_score is required' });
+    const { english, best_score, quiz_result } = req.body;
+    if (!english && best_score === undefined && quiz_result === undefined) {
+      return res.status(400).json({ error: 'english, best_score, or quiz_result is required' });
     }
 
     const id = req.params.id;
@@ -45,6 +45,11 @@ module.exports = function (db) {
     }
     if (best_score !== undefined && best_score > (existing.best_score || 0)) {
       db.prepare('UPDATE sentences SET best_score = ? WHERE id = ?').run(best_score, id);
+    }
+    if (quiz_result === 'right') {
+      db.prepare('UPDATE sentences SET quiz_right = quiz_right + 1 WHERE id = ?').run(id);
+    } else if (quiz_result === 'wrong') {
+      db.prepare('UPDATE sentences SET quiz_wrong = quiz_wrong + 1 WHERE id = ?').run(id);
     }
 
     const row = db.prepare('SELECT * FROM sentences WHERE id = ?').get(id);
