@@ -41,29 +41,148 @@
       box-shadow: 0 0 60px rgba(0,0,0,0.12);
     }
 
+    /* ── Login Overlay ── */
+    .login-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 20px;
+      overflow-y: auto;
+    }
+    .login-overlay.hidden { display: none; }
+    .login-logo { text-align: center; margin-bottom: 28px; }
+    .login-logo h1 { margin: 0 0 4px; font-size: 28px; font-weight: 800; color: var(--accent); }
+    .login-logo p { margin: 0; font-size: 13px; color: var(--text-muted); }
+    .login-card {
+      width: 100%;
+      max-width: 360px;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      padding: 28px 24px;
+    }
+    .login-tabs {
+      display: flex;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.06);
+      padding: 3px;
+      margin-bottom: 22px;
+    }
+    .login-tab {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 999px;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    .login-tab.active { background: #fff; color: var(--accent); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .login-field { margin-bottom: 14px; }
+    .login-field label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+    .login-field input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1.5px solid rgba(37,99,235,0.2);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.8);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+    .login-field input:focus { border-color: var(--accent); }
+    .login-error { color: var(--danger); font-size: 13px; margin: -6px 0 10px; min-height: 18px; }
+    .login-submit {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s;
+      margin-top: 4px;
+    }
+    .login-submit:active { background: var(--accent-dark); transform: scale(0.98); }
+    .login-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
     /* ── Header ── */
     header {
       flex-shrink: 0;
-      padding: 20px 20px 14px;
+      padding: 14px 16px 12px;
       background: rgba(255,255,255,0.75);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(255,255,255,0.6);
     }
-    header h1 {
+    .header-inner { display: flex; align-items: center; justify-content: space-between; }
+    .header-brand h1 {
       margin: 0;
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 700;
       color: var(--accent);
-      display: flex;
+    }
+    .header-brand p { margin: 2px 0 0; font-size: 11px; color: var(--text-muted); }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+    .char-badge {
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
+      background: rgba(37,99,235,0.1);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
     }
-    header p {
-      margin: 3px 0 0;
+    .char-badge:active { background: rgba(37,99,235,0.18); }
+    .xp-tooltip {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      background: rgba(30,41,59,0.93);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
-      color: var(--text-muted);
+      white-space: nowrap;
+      z-index: 50;
+      pointer-events: none;
     }
+    .xp-tooltip.hidden { display: none; }
+    .btn-logout {
+      background: none;
+      border: none;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px 0;
+      font-family: inherit;
+      text-decoration: underline;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-logout:active { color: var(--danger); }
+    #header-user.hidden { display: none; }
 
     /* ── Content Area ── */
     #content {
@@ -214,6 +333,37 @@
       word-break: break-word;
     }
     .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .input-row { display: flex; gap: 8px; align-items: flex-end; }
+    .input-row textarea { flex: 1; }
+    .btn-voice {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: rgba(37,99,235,0.1);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      -webkit-tap-highlight-color: transparent;
+      align-self: flex-end;
+      margin-bottom: 0;
+    }
+    .btn-voice:active { background: rgba(37,99,235,0.2); }
+    .btn-voice.recording {
+      background: rgba(239,68,68,0.12);
+      color: var(--danger);
+      animation: pulse-voice 1.2s ease-out infinite;
+    }
+    @keyframes pulse-voice {
+      0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+      70%  { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
+      100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+    }
+    .btn-voice svg { width: 20px; height: 20px; }
 
     /* ── Tab 2: 내 문장 ── */
     .toggle-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -346,12 +496,8 @@
       margin-top: 18px;
     }
     .flashcard-face .listen-btn-quiz { margin-top: 16px; }
-    /* placeholder keeps layout height before JS renders */
     .flashcard-placeholder { min-height: 210px; }
-    .quiz-actions {
-      display: flex;
-      gap: 12px;
-    }
+    .quiz-actions { display: flex; gap: 12px; }
     .quiz-actions button {
       flex: 1;
       padding: 16px;
@@ -372,8 +518,6 @@
     .quiz-done { text-align: center; padding: 40px 20px; }
     .quiz-done h3 { margin: 0 0 8px; font-size: 22px; }
     .quiz-done p { margin: 0 0 22px; color: var(--text-muted); font-size: 14px; }
-
-    /* ── Quiz Setup ── */
     .quiz-section-label {
       font-size: 11px;
       font-weight: 700;
@@ -509,10 +653,45 @@
 <body>
 <div id="app">
 
+  <!-- ── Login Overlay ── -->
+  <div id="login-overlay" class="login-overlay hidden">
+    <div class="login-logo">
+      <h1>Eng-cha</h1>
+      <p>내가 말하고 싶은 문장을 영어로</p>
+    </div>
+    <div class="login-card">
+      <div class="login-tabs">
+        <button class="login-tab active" id="tab-login-btn" onclick="switchLoginTab('login')">로그인</button>
+        <button class="login-tab" id="tab-register-btn" onclick="switchLoginTab('register')">회원가입</button>
+      </div>
+      <div class="login-field">
+        <label>아이디</label>
+        <input type="text" id="auth-username" placeholder="아이디 입력" autocomplete="username" />
+      </div>
+      <div class="login-field">
+        <label>비밀번호</label>
+        <input type="password" id="auth-password" placeholder="비밀번호 입력" autocomplete="current-password" />
+      </div>
+      <p class="login-error" id="auth-error"></p>
+      <button class="login-submit" id="auth-submit-btn" onclick="doAuth()">로그인</button>
+    </div>
+  </div>
+
   <!-- ── Header ── -->
   <header>
-    <h1>Eng-cha</h1>
-    <p>내가 말하고 싶은 문장을 영어로</p>
+    <div class="header-inner">
+      <div class="header-brand">
+        <h1>Eng-cha</h1>
+        <p>내가 말하고 싶은 문장을 영어로</p>
+      </div>
+      <div class="header-right" id="header-user">
+        <div class="char-badge" id="char-badge" onclick="toggleXpTooltip()">
+          🥚 Lv.1
+          <div class="xp-tooltip hidden" id="xp-tooltip"></div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
   </header>
 
   <!-- ── Main Content ── -->
@@ -520,7 +699,16 @@
 
     <!-- Tab 1: 번역 -->
     <section id="tab-translate" class="tab-pane active">
-      <textarea id="korean-input" rows="4" placeholder="번역할 한국어 문장을 입력하세요…&#10;(Enter로 번역)"></textarea>
+      <div class="input-row">
+        <textarea id="korean-input" rows="4" placeholder="번역할 한국어 문장을 입력하세요…&#10;(Enter로 번역)"></textarea>
+        <button class="btn-voice" id="voice-btn" onclick="toggleVoiceInput()" title="한국어 음성 입력">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="22"/>
+          </svg>
+        </button>
+      </div>
       <button class="btn btn-primary mt" id="translate-btn" onclick="doTranslate()">번역하기 →</button>
       <p id="translate-error" class="error-msg hidden"></p>
 
@@ -550,7 +738,6 @@
 
     <!-- Tab 3: 퀴즈 -->
     <section id="tab-quiz" class="tab-pane">
-      <!-- Setup screen -->
       <div id="quiz-setup">
         <div class="mode-selector">
           <button id="mode-kr-en" class="active" onclick="setQuizMode('kr-en')">KR → EN</button>
@@ -566,7 +753,6 @@
         <p class="quiz-hint" id="quiz-hint"></p>
         <button class="btn btn-primary" id="quiz-start-btn" onclick="startQuiz()">퀴즈 시작 →</button>
       </div>
-      <!-- Play screen -->
       <div id="quiz-play" class="hidden">
         <p class="quiz-progress" id="quiz-progress"></p>
         <div id="quiz-area"><div class="flashcard-placeholder"></div></div>
@@ -575,21 +761,16 @@
 
     <!-- Tab 4: 발음 연습 -->
     <section id="tab-pron" class="tab-pane">
-      <!-- 문장 목록 -->
       <div id="pron-list-view">
         <p class="pron-hint">연습할 문장을 선택하세요</p>
         <div id="pron-sentence-list" class="pron-list"></div>
       </div>
-
-      <!-- 연습 패널 -->
       <div id="pron-practice-view" class="practice-panel">
         <button class="btn btn-ghost" onclick="pronBack()" style="margin-bottom:12px;">← 목록으로</button>
-
         <div class="practice-target">
           <div class="target-text" id="pron-target-text"></div>
           <button class="btn btn-ghost" onclick="pronListen()">▶ 발음 듣기</button>
         </div>
-
         <div class="record-section">
           <button class="record-btn" id="record-btn" onclick="toggleRecording()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -600,7 +781,6 @@
           </button>
           <div class="record-status" id="record-status">탭하여 녹음 시작</div>
         </div>
-
         <div id="pron-result" class="score-section hidden">
           <div class="score-number" id="pron-score"></div>
           <div class="score-label">점</div>
@@ -638,6 +818,7 @@
 <script>
 /* ── State ── */
 const s = {
+  user: null,
   english: '',
   looping: false,
   sentences: [],
@@ -648,7 +829,119 @@ const s = {
   hideEnglish: false,
   quiz: { mode: 'kr-en', deck: [], idx: 0, flipped: false, count: 10, allSentences: [] },
   pron: { sentences: [], selected: null, isRecording: false, recognition: null },
+  voice: { recording: false, mediaRecorder: null, chunks: [] },
 };
+
+/* ── Init ── */
+async function init() {
+  try {
+    const res = await fetch('/api/auth/me');
+    if (res.status === 401) { showLoginScreen(); return; }
+    const data = await res.json();
+    s.user = data;
+    updateCharBadge(data.character);
+    hideLoginScreen();
+  } catch {
+    showLoginScreen();
+  }
+}
+
+/* ── Auth UI ── */
+function showLoginScreen() {
+  document.getElementById('login-overlay').classList.remove('hidden');
+  document.getElementById('header-user').classList.add('hidden');
+  setTimeout(() => document.getElementById('auth-username').focus(), 100);
+}
+
+function hideLoginScreen() {
+  document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('header-user').classList.remove('hidden');
+}
+
+let _loginMode = 'login';
+function switchLoginTab(mode) {
+  _loginMode = mode;
+  document.getElementById('tab-login-btn').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-register-btn').classList.toggle('active', mode === 'register');
+  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? '로그인' : '회원가입';
+  document.getElementById('auth-error').textContent = '';
+  document.getElementById('auth-password').autocomplete = mode === 'login' ? 'current-password' : 'new-password';
+}
+
+async function doAuth() {
+  const username = document.getElementById('auth-username').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  const btn = document.getElementById('auth-submit-btn');
+
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = '아이디와 비밀번호를 입력해주세요'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '처리 중…';
+
+  try {
+    const endpoint = _loginMode === 'login' ? '/api/auth/login' : '/api/auth/register';
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.error || '오류가 발생했습니다'; return; }
+
+    s.user = data;
+    updateCharBadge(data.character);
+    hideLoginScreen();
+    document.getElementById('auth-username').value = '';
+    document.getElementById('auth-password').value = '';
+  } catch {
+    errEl.textContent = '서버 오류가 발생했습니다';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = _loginMode === 'login' ? '로그인' : '회원가입';
+  }
+}
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method: 'POST' });
+  s.user = null;
+  s.sentences = [];
+  s.quiz.allSentences = [];
+  s.pron.sentences = [];
+  showLoginScreen();
+}
+
+/* ── Character Badge ── */
+function updateCharBadge(character) {
+  if (!character) return;
+  const badge = document.getElementById('char-badge');
+  badge.childNodes[0].textContent = `${character.emoji} Lv.${character.level}`;
+  if (s.user) s.user.character = character;
+}
+
+function toggleXpTooltip() {
+  const tt = document.getElementById('xp-tooltip');
+  if (!s.user?.character) return;
+  const c = s.user.character;
+  const nextInfo = c.nextLevelXp ? `${c.xp} / ${c.nextLevelXp} XP` : `${c.xp} XP (MAX)`;
+  tt.textContent = `${c.title} · ${nextInfo}`;
+  tt.classList.toggle('hidden');
+  if (!tt.classList.contains('hidden')) {
+    setTimeout(() => tt.classList.add('hidden'), 2500);
+  }
+}
+
+function grantXpFeedback(character) {
+  if (!character) return;
+  updateCharBadge(character);
+  if (character.leveledUp) {
+    showToast(`🎉 레벨업! ${character.emoji} ${character.title} (Lv.${character.level})`);
+  }
+}
+
+/* ── 401 Handler ── */
+function handle401() { showLoginScreen(); }
 
 /* ── Tab Switching ── */
 function showTab(tab) {
@@ -670,7 +963,7 @@ function showToast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  _toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
 /* ── Tab 1: 번역 ── */
@@ -692,6 +985,7 @@ async function doTranslate() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ korean: input }),
     });
+    if (res.status === 401) { handle401(); return; }
     if (!res.ok) throw new Error();
     const data = await res.json();
     s.english = data.english;
@@ -732,7 +1026,10 @@ async function doSave() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ korean, english: s.english }),
     });
+    if (res.status === 401) { handle401(); return; }
     if (!res.ok) throw new Error();
+    const data = await res.json();
+    grantXpFeedback(data.character);
     document.getElementById('korean-input').value = '';
     document.getElementById('translate-result').classList.add('hidden');
     s.english = '';
@@ -744,6 +1041,58 @@ async function doSave() {
     showToast('저장 실패');
   } finally {
     btn.disabled = false;
+  }
+}
+
+/* ── Voice Input (Whisper API) ── */
+async function toggleVoiceInput() {
+  if (s.voice.recording) {
+    s.voice.mediaRecorder?.stop();
+    return;
+  }
+
+  const btn = document.getElementById('voice-btn');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    s.voice.chunks = [];
+
+    const mr = new MediaRecorder(stream);
+    s.voice.mediaRecorder = mr;
+
+    mr.ondataavailable = e => { if (e.data.size > 0) s.voice.chunks.push(e.data); };
+
+    mr.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      s.voice.recording = false;
+      btn.classList.remove('recording');
+      btn.title = '한국어 음성 입력';
+
+      const blob = new Blob(s.voice.chunks, { type: 'audio/webm' });
+      const formData = new FormData();
+      formData.append('audio', blob, 'recording.webm');
+
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
+        if (res.status === 401) { handle401(); return; }
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        document.getElementById('korean-input').value = data.korean;
+        doTranslate();
+      } catch {
+        showToast('음성 인식 실패');
+      } finally {
+        btn.disabled = false;
+      }
+    };
+
+    mr.start();
+    s.voice.recording = true;
+    btn.classList.add('recording');
+    btn.title = '탭하여 중지';
+    showToast('녹음 중… 탭하여 중지');
+  } catch {
+    showToast('마이크 권한을 허용해주세요');
   }
 }
 
@@ -764,6 +1113,7 @@ function speakEnglish(text) {
 async function loadSentences() {
   try {
     const res = await fetch(`/api/sentences?page=${s.page}&limit=${s.limit}`);
+    if (res.status === 401) { handle401(); return; }
     const data = await res.json();
     s.sentences = data.data;
     s.total = data.total;
@@ -867,6 +1217,7 @@ function startEdit(id, el) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ english: val }),
       });
+      if (res.status === 401) { handle401(); return; }
       if (!res.ok) throw new Error();
       el.textContent = val;
       const row = s.sentences.find(r => r.id === id);
@@ -889,6 +1240,7 @@ async function deleteSentence(id) {
   if (!confirm('이 문장을 삭제할까요?')) return;
   try {
     const res = await fetch(`/api/sentences/${id}`, { method: 'DELETE' });
+    if (res.status === 401) { handle401(); return; }
     if (!res.ok) throw new Error();
     showToast('삭제했습니다');
     if (s.sentences.length === 1 && s.page > 1) s.page--;
@@ -934,6 +1286,7 @@ async function initQuiz() {
   document.getElementById('quiz-play').classList.add('hidden');
   try {
     const res = await fetch('/api/sentences?page=1&limit=100');
+    if (res.status === 401) { handle401(); return; }
     const data = await res.json();
     s.quiz.allSentences = data.data;
     updateQuizHint();
@@ -943,27 +1296,23 @@ async function initQuiz() {
 }
 
 function buildDeck(sentences, count) {
-  // shuffle first for randomness within priority groups
   const shuffled = [...sentences].sort(() => Math.random() - 0.5);
   shuffled.sort((a, b) => {
     const aTried = (a.quiz_right || 0) + (a.quiz_wrong || 0);
     const bTried = (b.quiz_right || 0) + (b.quiz_wrong || 0);
-    if (aTried === 0 && bTried > 0) return -1; // never tried → first
+    if (aTried === 0 && bTried > 0) return -1;
     if (bTried === 0 && aTried > 0) return 1;
-    if (aTried === 0 && bTried === 0) return 0; // keep shuffle order
+    if (aTried === 0 && bTried === 0) return 0;
     const aRate = (a.quiz_wrong || 0) / aTried;
     const bRate = (b.quiz_wrong || 0) / bTried;
-    return bRate - aRate; // higher wrong-rate → first; ties keep shuffle order
+    return bRate - aRate;
   });
   const take = count === 0 ? shuffled.length : Math.min(count, shuffled.length);
   return shuffled.slice(0, take);
 }
 
 function startQuiz() {
-  if (s.quiz.allSentences.length === 0) {
-    showToast('저장된 문장이 없습니다');
-    return;
-  }
+  if (s.quiz.allSentences.length === 0) { showToast('저장된 문장이 없습니다'); return; }
   s.quiz.deck = buildDeck(s.quiz.allSentences, s.quiz.count);
   s.quiz.idx = 0;
   s.quiz.flipped = false;
@@ -974,12 +1323,14 @@ function startQuiz() {
 
 async function recordQuizResult(id, result) {
   try {
-    await fetch(`/api/sentences/${id}`, {
+    const res = await fetch(`/api/sentences/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quiz_result: result }),
     });
-    // update local allSentences cache
+    if (res.status === 401) { handle401(); return; }
+    const data = await res.json();
+    if (result === 'right') grantXpFeedback(data.character);
     const row = s.quiz.allSentences.find(r => r.id === id);
     if (row) {
       if (result === 'right') row.quiz_right = (row.quiz_right || 0) + 1;
@@ -995,9 +1346,7 @@ function renderQuizCard() {
 
   if (deck.length === 0) {
     prog.textContent = '';
-    area.innerHTML = `<div class="empty-state">
-      <p>저장된 문장이 없습니다.<br>번역 탭에서 문장을 추가해보세요.</p>
-    </div>`;
+    area.innerHTML = `<div class="empty-state"><p>저장된 문장이 없습니다.<br>번역 탭에서 문장을 추가해보세요.</p></div>`;
     return;
   }
 
@@ -1078,26 +1427,23 @@ document.getElementById('korean-input').addEventListener('keydown', e => {
 /* ── Tab 4: 발음 연습 ── */
 async function initPron() {
   if (s.pron.isRecording) stopRecording();
-
   try {
     const res = await fetch('/api/sentences?page=1&limit=100');
+    if (res.status === 401) { handle401(); return; }
     const data = await res.json();
     s.pron.sentences = data.data;
 
-    // If a sentence is selected (practice mode open), update it from fresh data
     if (s.pron.selected) {
       const fresh = s.pron.sentences.find(r => r.id === s.pron.selected.id);
       if (fresh) {
         s.pron.selected = fresh;
       } else {
-        // Selected sentence was deleted — fall back to list
         s.pron.selected = null;
         document.getElementById('pron-list-view').style.display = '';
         document.getElementById('pron-practice-view').classList.remove('visible');
       }
     }
 
-    // Only re-render list if practice panel is not open
     const practiceOpen = document.getElementById('pron-practice-view').classList.contains('visible');
     if (!practiceOpen) renderPronList();
   } catch {
@@ -1124,7 +1470,6 @@ function selectPronSentence(id) {
   s.pron.selected = s.pron.sentences.find(r => r.id === id) || null;
   if (!s.pron.selected) return;
   if (s.pron.isRecording) stopRecording();
-
   document.getElementById('pron-list-view').style.display = 'none';
   document.getElementById('pron-practice-view').classList.add('visible');
   document.getElementById('pron-target-text').textContent = s.pron.selected.english;
@@ -1150,10 +1495,7 @@ function toggleRecording() {
 
 function startRecording() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) {
-    showToast('Chrome 또는 Edge 브라우저에서만 지원됩니다');
-    return;
-  }
+  if (!SR) { showToast('Chrome 또는 Edge 브라우저에서만 지원됩니다'); return; }
 
   const recog = new SR();
   recog.lang = 'en-US';
@@ -1201,7 +1543,6 @@ function evaluatePronunciation(transcript) {
   const tWords = norm(target).split(/\s+/).filter(Boolean);
   const sWords = norm(transcript).split(/\s+/).filter(Boolean);
 
-  // Word-level LCS for best-effort alignment
   const m = tWords.length, n = sWords.length;
   const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
   for (let i = 1; i <= m; i++)
@@ -1238,16 +1579,29 @@ function evaluatePronunciation(transcript) {
 
 async function savePronScore(id, score) {
   try {
-    await fetch(`/api/sentences/${id}`, {
+    const res = await fetch(`/api/sentences/${id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ best_score: score }),
     });
+    if (res.status === 401) { handle401(); return; }
+    const data = await res.json();
+    grantXpFeedback(data.character);
     const row = s.pron.sentences.find(r => r.id === id);
     if (row) row.best_score = score;
     if (s.pron.selected?.id === id) s.pron.selected.best_score = score;
-  } catch { /* silent — score already shown */ }
+  } catch { /* silent */ }
 }
+
+/* ── Start ── */
+document.addEventListener('DOMContentLoaded', init);
+
+/* Enter key in login form */
+['auth-username', 'auth-password'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') doAuth();
+  });
+});
 </script>
 </body>
 </html>
