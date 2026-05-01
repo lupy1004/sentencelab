@@ -70,5 +70,14 @@ module.exports = function (db) {
     res.json({ ...user, character: getCharacter(user.id) });
   });
 
+  router.get('/stats', (req, res) => {
+    if (!req.session?.userId) return res.status(401).json({ error: 'Unauthorized' });
+    const userId = req.session.userId;
+    const total = db.prepare('SELECT COUNT(*) as c FROM sentences WHERE user_id = ?').get(userId).c;
+    const quiz = db.prepare('SELECT COALESCE(SUM(quiz_right),0) as r, COALESCE(SUM(quiz_wrong),0) as w FROM sentences WHERE user_id = ?').get(userId);
+    const pronPracticed = db.prepare('SELECT COUNT(*) as c FROM sentences WHERE user_id = ? AND best_score > 0').get(userId).c;
+    res.json({ totalSentences: total, quizRight: quiz.r, quizWrong: quiz.w, pronPracticed });
+  });
+
   return router;
 };

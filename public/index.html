@@ -333,37 +333,6 @@
       word-break: break-word;
     }
     .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .input-row { display: flex; gap: 8px; align-items: flex-end; }
-    .input-row textarea { flex: 1; }
-    .btn-voice {
-      flex-shrink: 0;
-      width: 48px;
-      height: 48px;
-      border: none;
-      border-radius: var(--radius-sm);
-      background: rgba(37,99,235,0.1);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.15s;
-      -webkit-tap-highlight-color: transparent;
-      align-self: flex-end;
-      margin-bottom: 0;
-    }
-    .btn-voice:active { background: rgba(37,99,235,0.2); }
-    .btn-voice.recording {
-      background: rgba(239,68,68,0.12);
-      color: var(--danger);
-      animation: pulse-voice 1.2s ease-out infinite;
-    }
-    @keyframes pulse-voice {
-      0%   { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
-      70%  { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
-      100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
-    }
-    .btn-voice svg { width: 20px; height: 20px; }
 
     /* ── Tab 2: 내 문장 ── */
     .toggle-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -648,6 +617,96 @@
     .word-chip.miss  { background: rgba(239,68,68,0.12); color: var(--danger); text-decoration: line-through; }
     .pron-best-record { font-size: 12px; color: var(--text-muted); margin-top: 10px; font-weight: 600; }
     .pron-new-record { color: var(--success); }
+
+    /* ── Tab 5: 프로필 ── */
+    .profile-char-card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+    .char-emoji-big {
+      font-size: 64px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .char-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .char-level { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+    .xp-bar-wrap {
+      width: 100%;
+      height: 24px;
+      background: rgba(0,0,0,0.1);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .xp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #60a5fa);
+      transition: width 0.5s ease;
+      min-width: 0;
+    }
+    .xp-text { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .next-level { font-size: 13px; color: var(--accent); font-weight: 600; }
+    .xp-guide {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+    .xp-guide h3 { margin: 0 0 14px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .xp-guide-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      font-size: 13px;
+    }
+    .xp-guide-row:last-child { border-bottom: none; }
+    .xp-guide-icon { font-size: 16px; margin-right: 10px; }
+    .xp-guide-desc { flex: 1; color: var(--text); }
+    .xp-guide-point { font-weight: 700; color: var(--accent); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-item {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .stat-icon { font-size: 20px; margin-bottom: 6px; }
+    .stat-value { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+    .account-card {
+      background: var(--glass);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+    }
+    .account-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+    .account-username { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 14px; }
+    .account-username-value { color: var(--accent); font-family: 'Monaco', 'Courier New', monospace; }
   </style>
 </head>
 <body>
@@ -699,16 +758,7 @@
 
     <!-- Tab 1: 번역 -->
     <section id="tab-translate" class="tab-pane active">
-      <div class="input-row">
-        <textarea id="korean-input" rows="4" placeholder="번역할 한국어 문장을 입력하세요…&#10;(Enter로 번역)"></textarea>
-        <button class="btn-voice" id="voice-btn" onclick="toggleVoiceInput()" title="한국어 음성 입력">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
-            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-            <line x1="12" y1="19" x2="12" y2="22"/>
-          </svg>
-        </button>
-      </div>
+      <textarea id="korean-input" rows="4" placeholder="번역할 한국어 문장을 입력하세요…&#10;(Enter로 번역)"></textarea>
       <button class="btn btn-primary mt" id="translate-btn" onclick="doTranslate()">번역하기 →</button>
       <p id="translate-error" class="error-msg hidden"></p>
 
@@ -790,6 +840,66 @@
       </div>
     </section>
 
+    <!-- Tab 5: 프로필 -->
+    <section id="tab-profile" class="tab-pane">
+      <div class="profile-char-card">
+        <div class="char-emoji-big" id="profile-char-emoji">🥚</div>
+        <div class="char-title" id="profile-char-title">알</div>
+        <div class="char-level" id="profile-char-level">Lv.1</div>
+        <div class="xp-bar-wrap">
+          <div class="xp-bar-fill" id="profile-xp-bar" style="width: 0%"></div>
+        </div>
+        <div class="xp-text" id="profile-xp-text">0 / 100 XP</div>
+        <div class="next-level" id="profile-next-level">다음 레벨까지 100 XP</div>
+      </div>
+
+      <div class="xp-guide">
+        <h3>🎮 경험치 획득 방법</h3>
+        <div class="xp-guide-row">
+          <div><span class="xp-guide-icon">📝</span> <span class="xp-guide-desc">문장 저장</span></div>
+          <div class="xp-guide-point">+10 XP</div>
+        </div>
+        <div class="xp-guide-row">
+          <div><span class="xp-guide-icon">✅</span> <span class="xp-guide-desc">퀴즈 정답</span></div>
+          <div class="xp-guide-point">+5 XP</div>
+        </div>
+        <div class="xp-guide-row">
+          <div><span class="xp-guide-icon">🎤</span> <span class="xp-guide-desc">발음 신기록</span></div>
+          <div class="xp-guide-point">최대 +20 XP</div>
+        </div>
+      </div>
+
+      <h3 style="margin:0 0 12px;font-size:14px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;font-weight:700;">📊 내 활동</h3>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-icon">📝</div>
+          <div class="stat-value" id="stat-sentences">0개</div>
+          <div class="stat-label">저장한 문장</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="stat-quiz-right">0회</div>
+          <div class="stat-label">퀴즈 정답</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">❌</div>
+          <div class="stat-value" id="stat-quiz-wrong">0회</div>
+          <div class="stat-label">퀴즈 오답</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-icon">🎤</div>
+          <div class="stat-value" id="stat-pron">0개</div>
+          <div class="stat-label">발음 연습</div>
+        </div>
+      </div>
+
+      <div class="account-card">
+        <div class="account-label">계정</div>
+        <div class="account-username">아이디: <span class="account-username-value" id="profile-username">user</span></div>
+        <button class="btn btn-primary" onclick="doLogout()">로그아웃</button>
+      </div>
+    </section>
+
   </main>
 
   <!-- ── Bottom Navigation ── -->
@@ -810,6 +920,10 @@
       <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></span>
       <span>발음</span>
     </button>
+    <button data-tab="profile" onclick="showTab('profile')">
+      <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      <span>프로필</span>
+    </button>
   </nav>
 
 </div>
@@ -829,7 +943,6 @@ const s = {
   hideEnglish: false,
   quiz: { mode: 'kr-en', deck: [], idx: 0, flipped: false, count: 10, allSentences: [] },
   pron: { sentences: [], selected: null, isRecording: false, recognition: null },
-  voice: { recording: false, mediaRecorder: null, chunks: [] },
 };
 
 /* ── Init ── */
@@ -935,6 +1048,7 @@ function toggleXpTooltip() {
 function grantXpFeedback(character) {
   if (!character) return;
   updateCharBadge(character);
+  updateProfileCharCard(character);
   if (character.leveledUp) {
     showToast(`🎉 레벨업! ${character.emoji} ${character.title} (Lv.${character.level})`);
   }
@@ -954,6 +1068,7 @@ function showTab(tab) {
   if (tab === 'sentences') loadSentences();
   if (tab === 'quiz') initQuiz();
   if (tab === 'pron') initPron();
+  if (tab === 'profile') initProfile();
 }
 
 /* ── Toast ── */
@@ -1044,55 +1159,44 @@ async function doSave() {
   }
 }
 
-/* ── Voice Input (Whisper API) ── */
-async function toggleVoiceInput() {
-  if (s.voice.recording) {
-    s.voice.mediaRecorder?.stop();
-    return;
-  }
+/* ── Tab 5: 프로필 ── */
+async function initProfile() {
+  if (!s.user) return;
+  updateProfileCharCard(s.user.character);
+  document.getElementById('profile-username').textContent = s.user.username;
 
-  const btn = document.getElementById('voice-btn');
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    s.voice.chunks = [];
-
-    const mr = new MediaRecorder(stream);
-    s.voice.mediaRecorder = mr;
-
-    mr.ondataavailable = e => { if (e.data.size > 0) s.voice.chunks.push(e.data); };
-
-    mr.onstop = async () => {
-      stream.getTracks().forEach(t => t.stop());
-      s.voice.recording = false;
-      btn.classList.remove('recording');
-      btn.title = '한국어 음성 입력';
-
-      const blob = new Blob(s.voice.chunks, { type: 'audio/webm' });
-      const formData = new FormData();
-      formData.append('audio', blob, 'recording.webm');
-
-      btn.disabled = true;
-      try {
-        const res = await fetch('/api/transcribe', { method: 'POST', body: formData });
-        if (res.status === 401) { handle401(); return; }
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        document.getElementById('korean-input').value = data.korean;
-        doTranslate();
-      } catch {
-        showToast('음성 인식 실패');
-      } finally {
-        btn.disabled = false;
-      }
-    };
-
-    mr.start();
-    s.voice.recording = true;
-    btn.classList.add('recording');
-    btn.title = '탭하여 중지';
-    showToast('녹음 중… 탭하여 중지');
+    const res = await fetch('/api/auth/stats');
+    if (res.status === 401) { handle401(); return; }
+    const stats = await res.json();
+    document.getElementById('stat-sentences').textContent = stats.totalSentences + '개';
+    document.getElementById('stat-quiz-right').textContent = stats.quizRight + '회';
+    document.getElementById('stat-quiz-wrong').textContent = stats.quizWrong + '회';
+    document.getElementById('stat-pron').textContent = stats.pronPracticed + '개';
   } catch {
-    showToast('마이크 권한을 허용해주세요');
+    showToast('통계 로드 실패');
+  }
+}
+
+function updateProfileCharCard(character) {
+  if (!character) return;
+  document.getElementById('profile-char-emoji').textContent = character.emoji;
+  document.getElementById('profile-char-title').textContent = character.title;
+  document.getElementById('profile-char-level').textContent = 'Lv.' + character.level;
+  const xpText = character.nextLevelXp
+    ? `${character.xp} / ${character.nextLevelXp} XP`
+    : `${character.xp} XP (MAX)`;
+  document.getElementById('profile-xp-text').textContent = xpText;
+  const pct = character.nextLevelXp
+    ? Math.round((character.xp / character.nextLevelXp) * 100)
+    : 100;
+  document.getElementById('profile-xp-bar').style.width = pct + '%';
+  const nextEl = document.getElementById('profile-next-level');
+  if (character.nextLevelXp) {
+    const remain = character.nextLevelXp - character.xp;
+    nextEl.textContent = `다음 레벨까지 ${remain} XP`;
+  } else {
+    nextEl.textContent = '최고 레벨 달성! 🎉';
   }
 }
 
