@@ -66,8 +66,9 @@ function xpToLevel(xp) {
 function characterInfo(xp) {
   const level = xpToLevel(xp);
   const meta = LEVEL_META[level];
+  const currentLevelXp = LEVEL_THRESHOLDS[level];
   const nextLevelXp = level < MAX_LEVEL ? LEVEL_THRESHOLDS[level + 1] : null;
-  return { level, xp, nextLevelXp, emoji: meta.emoji, title: meta.title };
+  return { level, xp, currentLevelXp, nextLevelXp, emoji: meta.emoji, title: meta.title };
 }
 
 function grantXp(userId, amount) {

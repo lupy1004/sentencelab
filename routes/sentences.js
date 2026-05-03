@@ -32,7 +32,7 @@ module.exports = function (db) {
       .run(korean.trim(), english.trim(), userId);
 
     const row = db.prepare('SELECT * FROM sentences WHERE id = ?').get(result.lastInsertRowid);
-    const character = grantXp(userId, 10);
+    const character = grantXp(userId, 3);
 
     res.status(201).json({ ...row, character });
   });
@@ -55,7 +55,7 @@ module.exports = function (db) {
     }
     if (best_score !== undefined && best_score > (existing.best_score || 0)) {
       db.prepare('UPDATE sentences SET best_score = ? WHERE id = ?').run(best_score, id);
-      character = grantXp(userId, Math.floor(best_score / 5));
+      character = grantXp(userId, Math.min(Math.floor(best_score / 5), 10));
     }
     if (quiz_result === 'right') {
       db.prepare('UPDATE sentences SET quiz_right = quiz_right + 1 WHERE id = ?').run(id);
